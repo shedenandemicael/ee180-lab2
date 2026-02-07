@@ -99,7 +99,7 @@ void runSobelST()
     sobel_ic += perf_counters.ic.count;
 
     cap_total += cap_time;
-    gray_total += gray_time;
+    // gray_total += gray_time;
     sobel_total += sobel_time;
     sobel_l1cm_total += sobel_l1cm;
     sobel_ic_total += sobel_ic;
