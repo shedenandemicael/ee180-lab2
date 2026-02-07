@@ -20,8 +20,8 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   
   img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
   // Convert to grayscale
-  for (int i=0; i<img.rows; i++) {
-    for (int j=0; j<img.cols; j++) {
+  for (int j=0; j<img.cols; j++) {
+    for (int i=0; i<img.rows; i++) {
       color = .114*img.data[STEP0*i + STEP1*j] +
               .587*img.data[STEP0*i + STEP1*j + 1] +
               .299*img.data[STEP0*i + STEP1*j + 2];
