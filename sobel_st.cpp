@@ -104,8 +104,8 @@ void runSobelST()
     sobel_l1cm_total += sobel_l1cm;
     sobel_ic_total += sobel_ic;
     disp_total += disp_time;
-    total_fps += PROC_FREQ/float(cap_time + disp_time + gray_time + sobel_time);
-    total_ipc += float(sobel_ic/float(cap_time + disp_time + gray_time + sobel_time));
+    total_fps += PROC_FREQ/float(cap_time + disp_time + sobel_time);
+    total_ipc += float(sobel_ic/float(cap_time + disp_time + sobel_time));
     i++;
 
     // Press q to exit
@@ -116,12 +116,11 @@ void runSobelST()
   }
 
   total_epf = PROC_EPC*NCORES/(total_fps/i);
-  float total_time = float(gray_total + sobel_total + cap_total + disp_total);
+  float total_time = float(sobel_total + cap_total + disp_total);
 
   results_file.open("st_perf.csv", ios::out);
   results_file << "Percent of time per function" << endl;
   results_file << "Capture, " << (cap_total/total_time)*100 << "%" << endl;
-  results_file << "Grayscale, " << (gray_total/total_time)*100 << "%" << endl;
   results_file << "Sobel, " << (sobel_total/total_time)*100 << "%" << endl;
   results_file << "Display, " << (disp_total/total_time)*100 << "%" << endl;
   results_file << "\nSummary" << endl;
