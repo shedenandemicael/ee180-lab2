@@ -17,14 +17,14 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   double color;
 
   // Convert to grayscale
-  for (int i=0; i<img.rows; i++) {
-    for (int j=0; j<img.cols; j++) {
-      color = .114*img.data[STEP0*i + STEP1*j] +
-              .587*img.data[STEP0*i + STEP1*j + 1] +
-              .299*img.data[STEP0*i + STEP1*j + 2];
-      img.data[IMG_WIDTH*i + j] = color;
-    }
-  }
+  // for (int i=0; i<img.rows; i++) {
+  //   for (int j=0; j<img.cols; j++) {
+  //     color = .114*img.data[STEP0*i + STEP1*j] +
+  //             .587*img.data[STEP0*i + STEP1*j + 1] +
+  //             .299*img.data[STEP0*i + STEP1*j + 2];
+  //     img.data[IMG_WIDTH*i + j] = color;
+  //   }
+  // }
 
   // Apply Sobel filter to black & white image
   unsigned short sobel;
