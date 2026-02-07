@@ -5,3 +5,9 @@ Write a README file that contains the following:
 - A brief description of optimizations you tried, the outcome, and some explanation (why it worked / why it did not)
 - Report the final performance for both single thread and multithread (we will verify this with your code submission)
 - If you used AI tools, explain how you use it to help with the assignment
+
+Names: Sheden Andemicael, Thomas Kebede
+Board Host Name: ee180-28z.stanford.edu
+
+Description: 
+- began by optimizing the sobelCalc function since a majority of work was being done there
