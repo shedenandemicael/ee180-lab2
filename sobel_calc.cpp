@@ -89,15 +89,15 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
 
   for (int i=1; i<img.rows; i++) {
     for (int j=1; j<img.cols; j++) {
-      sobelx = abs(gray_buf.data[IMG_WIDTH*((row_start-1)%3) + (j-1)] -
+      sobelx = abs(gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j-1)] -
         gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j-1)] +
-        2*gray_buf.data[IMG_WIDTH*((row_start-1)%3) + (j)] -
+        2*gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j)] -
         2*gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j)] +
-        gray_buf.data[IMG_WIDTH*((row_start-1)%3) + (j+1)] -
+        gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j+1)] -
         gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j+1)]);
 
-      sobely = abs(gray_buf.data[IMG_WIDTH*((row_start+i-1)%3) + (j-1)] -
-        gray_buf.data[IMG_WIDTH*((row_start-1)%3) + (j+1)] +
+      sobely = abs(gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j-1)] -
+        gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j+1)] +
         2*gray_buf.data[IMG_WIDTH*(row_start%3) + (j-1)] -
         2*gray_buf.data[IMG_WIDTH*(row_start%3) + (j+1)] +
         gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j-1)] -
