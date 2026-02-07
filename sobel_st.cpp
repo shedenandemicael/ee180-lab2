@@ -22,9 +22,9 @@ using namespace cv;
 static ofstream results_file;
 
 // Define image mats to pass between function calls
-static Mat img_gray, img_sobel;
+static Mat img_sobel;
 static float total_fps, total_ipc, total_epf;
-static float gray_total, sobel_total, cap_total, disp_total;
+static float sobel_total, cap_total, disp_total;
 static float sobel_ic_total, sobel_l1cm_total;
 
 /*******************************************
