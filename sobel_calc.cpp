@@ -34,6 +34,15 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   // Calculate the x and y convolution
   for (int i=1; i<img.rows; i++) {
     for (int j=1; j<img.cols; j++) {
+      for (int di=-1; di < 2; di++) {
+        for (int dj=-1; dj < 2; dj++) {
+          color = .114*img.data[STEP0*(i+di) + STEP1*(j+dj)] +
+              .587*img.data[STEP0*(i+di) + STEP1*(j+dj) + 1] +
+              .299*img.data[STEP0*(i+di) + STEP1*(j+dj) + 2];
+          img.data[IMG_WIDTH*(i+di) + (j+dj)] = color;
+        }
+      }
+
       sobelx = abs(img.data[IMG_WIDTH*(i-1) + (j-1)] -
 		  img.data[IMG_WIDTH*(i+1) + (j-1)] +
 		  2*img.data[IMG_WIDTH*(i-1) + (j)] -
