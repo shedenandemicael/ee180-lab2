@@ -40,7 +40,7 @@ void runSobelST()
   // Set up variables for computing Sobel
   string top = "Sobel Top";
   Mat src;
-  uint64_t cap_time, gray_time, sobel_time, disp_time, sobel_l1cm, sobel_ic;
+  uint64_t cap_time, sobel_time, disp_time, sobel_l1cm, sobel_ic;
 
   counters_t perf_counters;
 
@@ -62,7 +62,7 @@ void runSobelST()
 
   while (1) {
     // Allocate memory to hold grayscale and sobel images
-    img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
+    // img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
     img_sobel = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
 
     pc_start(&perf_counters);
@@ -73,16 +73,16 @@ void runSobelST()
     sobel_l1cm = perf_counters.l1_misses.count;
     sobel_ic = perf_counters.ic.count;
 
-    pc_start(&perf_counters);
-    grayScale(src, img_gray);
-    pc_stop(&perf_counters);
+    // pc_start(&perf_counters);
+    // grayScale(src, img_gray);
+    // pc_stop(&perf_counters);
 
-    gray_time = perf_counters.cycles.count;
-    sobel_l1cm += perf_counters.l1_misses.count;
-    sobel_ic += perf_counters.ic.count;
+    // gray_time = perf_counters.cycles.count;
+    // sobel_l1cm += perf_counters.l1_misses.count;
+    // sobel_ic += perf_counters.ic.count;
 
     pc_start(&perf_counters);
-    sobelCalc(img_gray, img_sobel);
+    sobelCalc(src, img_sobel);
     pc_stop(&perf_counters);
 
     sobel_time = perf_counters.cycles.count;
