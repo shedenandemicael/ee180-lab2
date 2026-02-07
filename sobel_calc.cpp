@@ -73,9 +73,10 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   unsigned short sobel;
   unsigned short sobelx;
   unsigned short sobely;
+  static Mat gray_buf;
 
   // initialize gray buffer
-  static Mat gray_buf = Mat(3, IMG_WIDTH, CV_8UC1);
+  gray_buf = Mat(3, IMG_WIDTH, CV_8UC1);
   unsigned short row_start = 0;
   for (int i=0; i<3; i++) {
     for (int j=0; j<img.cols; j++) {
@@ -106,14 +107,13 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       sobel = sobelx + sobely;
       sobel = (sobel > 255) ? 255 : sobel;
       img_sobel_out.data[IMG_WIDTH*(i) + j] = sobel;
-
-      for (int k=0; k<img.cols; k++) {
-        color = .114*img.data[STEP0*i + STEP1*j] +
-              .587*img.data[STEP0*i + STEP1*j + 1] +
-              .299*img.data[STEP0*i + STEP1*j + 2];
-        gray_buf.data[IMG_WIDTH*row_start + j] = color;
-      }
-      row_start = (row_start + 1) % 3;
     }
+    for (int j=0; j<img.cols; j++) {
+      color = .114*img.data[STEP0*row_start + STEP1*j] +
+            .587*img.data[STEP0*row_start + STEP1*j + 1] +
+            .299*img.data[STEP0*row_start + STEP1*j + 2];
+      gray_buf.data[IMG_WIDTH*row_start + j] = color;
+    }
+    row_start = (row_start + 1) % 3;
   }
 }
