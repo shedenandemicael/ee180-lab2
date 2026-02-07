@@ -40,8 +40,8 @@ void sobelCalc(Mat& img_gray, Mat& img_sobel_out)
   unsigned short sobely;
 
   // Calculate the x and y convolution
-  for (int j=1; j<img_gray.cols; j++) {
-    for (int i=1; i<img_gray.rows; i++) {
+  for (int i=1; i<img_gray.rows; i++) {
+    for (int j=1; j<img_gray.cols; j++) {
       sobelx = abs(img_gray.data[IMG_WIDTH*(i-1) + (j-1)] -
 		  img_gray.data[IMG_WIDTH*(i+1) + (j-1)] +
 		  2*img_gray.data[IMG_WIDTH*(i-1) + (j)] -
