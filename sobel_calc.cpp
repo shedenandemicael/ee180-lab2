@@ -82,7 +82,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       color = .114*img.data[STEP0*i + STEP1*j] +
               .587*img.data[STEP0*i + STEP1*j + 1] +
               .299*img.data[STEP0*i + STEP1*j + 2];
-      gray_buf.data[i + j] = color;
+      gray_buf.data[IMG_WIDTH*i + j] = color;
     }
   }
 
@@ -111,7 +111,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
         color = .114*img.data[STEP0*i + STEP1*j] +
               .587*img.data[STEP0*i + STEP1*j + 1] +
               .299*img.data[STEP0*i + STEP1*j + 2];
-        gray_buf.data[row_start*i + j] = color;
+        gray_buf.data[IMG_WIDTH*row_start + j] = color;
       }
       row_start = (row_start + 1) % 3;
     }
