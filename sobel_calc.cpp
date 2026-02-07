@@ -65,6 +65,6 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   //     sobel = sobelx + sobely;
   //     sobel = (sobel > 255) ? 255 : sobel;
   //     img_sobel_out.data[IMG_WIDTH*(i) + j] = sobel;
-  //   }
-  }
+  // }
+  // }
 }
