@@ -14,106 +14,106 @@ using namespace cv;
  ********************************************/
 void sobelCalc(Mat& img, Mat& img_sobel_out)
 {
-  // double color;
-
-  // // Convert to grayscale
-  // for (int i=0; i<img.rows; i++) {
-  //   for (int j=0; j<img.cols; j++) {
-  //     color = .114*img.data[STEP0*i + STEP1*j] +
-  //             .587*img.data[STEP0*i + STEP1*j + 1] +
-  //             .299*img.data[STEP0*i + STEP1*j + 2];
-  //     img.data[IMG_WIDTH*i + j] = color;
-  //   }
-  // }
-
-  // // Apply Sobel filter to black & white image
-  // unsigned short sobel;
-  // unsigned short sobelx;
-  // unsigned short sobely;
-
-  // // Calculate the x and y convolution
-  // for (int i=1; i<img.rows; i++) {
-  //   for (int j=1; j<img.cols; j++) {
-  //     // for (int di=-1; di < 2; di++) {
-  //     //   for (int dj=-1; dj < 2; dj++) {
-  //     //     color = .114*img.data[STEP0*(i+di) + STEP1*(j+dj)] +
-  //     //         .587*img.data[STEP0*(i+di) + STEP1*(j+dj) + 1] +
-  //     //         .299*img.data[STEP0*(i+di) + STEP1*(j+dj) + 2];
-  //     //     img.data[IMG_WIDTH*(i+di) + (j+dj)] = color;
-  //     //   }
-  //     // }
-
-  //     sobelx = abs(img.data[IMG_WIDTH*(i-1) + (j-1)] -
-	// 	  img.data[IMG_WIDTH*(i+1) + (j-1)] +
-	// 	  2*img.data[IMG_WIDTH*(i-1) + (j)] -
-	// 	  2*img.data[IMG_WIDTH*(i+1) + (j)] +
-	// 	  img.data[IMG_WIDTH*(i-1) + (j+1)] -
-	// 	  img.data[IMG_WIDTH*(i+1) + (j+1)]);
-
-  //     // sobelx = (sobelx > 255) ? 255 : sobelx;
-
-  //     sobely = abs(img.data[IMG_WIDTH*(i-1) + (j-1)] -
-	// 	  img.data[IMG_WIDTH*(i-1) + (j+1)] +
-	// 	  2*img.data[IMG_WIDTH*(i) + (j-1)] -
-	// 	  2*img.data[IMG_WIDTH*(i) + (j+1)] +
-	// 	  img.data[IMG_WIDTH*(i+1) + (j-1)] -
-	// 	  img.data[IMG_WIDTH*(i+1) + (j+1)]);
-
-  //     // sobely = (sobely > 255) ? 255 : sobely;
-
-  //     // Combine the two convolutions into the output image
-  //     sobel = sobelx + sobely;
-  //     sobel = (sobel > 255) ? 255 : sobel;
-  //     img_sobel_out.data[IMG_WIDTH*(i) + j] = sobel;
-  //   }
-  // }
-
-
   double color;
-  unsigned short sobel;
-  unsigned short sobelx;
-  unsigned short sobely;
-  static Mat gray_buf;
 
-  // initialize gray buffer
-  gray_buf = Mat(3, IMG_WIDTH, CV_8UC1);
-  unsigned short row_start = 0;
-  for (int i=0; i<3; i++) {
+  // Convert to grayscale
+  for (int i=0; i<img.rows; i++) {
     for (int j=0; j<img.cols; j++) {
       color = .114*img.data[STEP0*i + STEP1*j] +
               .587*img.data[STEP0*i + STEP1*j + 1] +
               .299*img.data[STEP0*i + STEP1*j + 2];
-      gray_buf.data[IMG_WIDTH*i + j] = color;
+      img.data[IMG_WIDTH*i + j] = color;
     }
   }
 
+  // Apply Sobel filter to black & white image
+  unsigned short sobel;
+  unsigned short sobelx;
+  unsigned short sobely;
+
+  // Calculate the x and y convolution
   for (int i=1; i<img.rows; i++) {
     for (int j=1; j<img.cols; j++) {
-      sobelx = abs(gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j-1)] -
-        gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j-1)] +
-        2*gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j)] -
-        2*gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j)] +
-        gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j+1)] -
-        gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j+1)]);
+      // for (int di=-1; di < 2; di++) {
+      //   for (int dj=-1; dj < 2; dj++) {
+      //     color = .114*img.data[STEP0*(i+di) + STEP1*(j+dj)] +
+      //         .587*img.data[STEP0*(i+di) + STEP1*(j+dj) + 1] +
+      //         .299*img.data[STEP0*(i+di) + STEP1*(j+dj) + 2];
+      //     img.data[IMG_WIDTH*(i+di) + (j+dj)] = color;
+      //   }
+      // }
 
-      sobely = abs(gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j-1)] -
-        gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j+1)] +
-        2*gray_buf.data[IMG_WIDTH*(row_start%3) + (j-1)] -
-        2*gray_buf.data[IMG_WIDTH*(row_start%3) + (j+1)] +
-        gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j-1)] -
-        gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j+1)]);
+      sobelx = abs(img.data[IMG_WIDTH*(i-1) + (j-1)] -
+		  img.data[IMG_WIDTH*(i+1) + (j-1)] +
+		  2*img.data[IMG_WIDTH*(i-1) + (j)] -
+		  2*img.data[IMG_WIDTH*(i+1) + (j)] +
+		  img.data[IMG_WIDTH*(i-1) + (j+1)] -
+		  img.data[IMG_WIDTH*(i+1) + (j+1)]);
+
+      // sobelx = (sobelx > 255) ? 255 : sobelx;
+
+      sobely = abs(img.data[IMG_WIDTH*(i-1) + (j-1)] -
+		  img.data[IMG_WIDTH*(i-1) + (j+1)] +
+		  2*img.data[IMG_WIDTH*(i) + (j-1)] -
+		  2*img.data[IMG_WIDTH*(i) + (j+1)] +
+		  img.data[IMG_WIDTH*(i+1) + (j-1)] -
+		  img.data[IMG_WIDTH*(i+1) + (j+1)]);
+
+      // sobely = (sobely > 255) ? 255 : sobely;
 
       // Combine the two convolutions into the output image
       sobel = sobelx + sobely;
       sobel = (sobel > 255) ? 255 : sobel;
       img_sobel_out.data[IMG_WIDTH*(i) + j] = sobel;
     }
-    for (int j=0; j<img.cols; j++) {
-      color = .114*img.data[STEP0*row_start + STEP1*j] +
-            .587*img.data[STEP0*row_start + STEP1*j + 1] +
-            .299*img.data[STEP0*row_start + STEP1*j + 2];
-      gray_buf.data[IMG_WIDTH*row_start + j] = color;
-    }
-    row_start = (row_start + 1) % 3;
   }
+
+
+  // double color;
+  // unsigned short sobel;
+  // unsigned short sobelx;
+  // unsigned short sobely;
+  // static Mat gray_buf;
+
+  // // initialize gray buffer
+  // gray_buf = Mat(3, IMG_WIDTH, CV_8UC1);
+  // unsigned short row_start = 0;
+  // for (int i=0; i<3; i++) {
+  //   for (int j=0; j<img.cols; j++) {
+  //     color = .114*img.data[STEP0*i + STEP1*j] +
+  //             .587*img.data[STEP0*i + STEP1*j + 1] +
+  //             .299*img.data[STEP0*i + STEP1*j + 2];
+  //     gray_buf.data[IMG_WIDTH*i + j] = color;
+  //   }
+  // }
+
+  // for (int i=1; i<img.rows; i++) {
+  //   for (int j=1; j<img.cols; j++) {
+  //     sobelx = abs(gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j-1)] -
+  //       gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j-1)] +
+  //       2*gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j)] -
+  //       2*gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j)] +
+  //       gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j+1)] -
+  //       gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j+1)]);
+
+  //     sobely = abs(gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j-1)] -
+  //       gray_buf.data[IMG_WIDTH*((row_start+2)%3) + (j+1)] +
+  //       2*gray_buf.data[IMG_WIDTH*(row_start%3) + (j-1)] -
+  //       2*gray_buf.data[IMG_WIDTH*(row_start%3) + (j+1)] +
+  //       gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j-1)] -
+  //       gray_buf.data[IMG_WIDTH*((row_start+1)%3) + (j+1)]);
+
+  //     // Combine the two convolutions into the output image
+  //     sobel = sobelx + sobely;
+  //     sobel = (sobel > 255) ? 255 : sobel;
+  //     img_sobel_out.data[IMG_WIDTH*(i) + j] = sobel;
+  //   }
+  //   for (int j=0; j<img.cols; j++) {
+  //     color = .114*img.data[STEP0*row_start + STEP1*j] +
+  //           .587*img.data[STEP0*row_start + STEP1*j + 1] +
+  //           .299*img.data[STEP0*row_start + STEP1*j + 2];
+  //     gray_buf.data[IMG_WIDTH*row_start + j] = color;
+  //   }
+  //   row_start = (row_start + 1) % 3;
+  // }
 }
