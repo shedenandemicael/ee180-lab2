@@ -51,7 +51,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
 		  img.data[IMG_WIDTH*(i+1) + (j+1)]);
 
       // sobelx = (sobelx > 255) ? 255 : sobelx;
-      sobelx = min(sobelx, 255);
+      sobelx = std::min(sobelx, 255);
 
       sobely = abs(img.data[IMG_WIDTH*(i-1) + (j-1)] -
 		  img.data[IMG_WIDTH*(i-1) + (j+1)] +
@@ -61,7 +61,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
 		  img.data[IMG_WIDTH*(i+1) + (j+1)]);
 
       // sobely = (sobely > 255) ? 255 : sobely;
-      sobely = min(sobely, 255);
+      sobely = std::min(sobely, 255);
 
       // Combine the two convolutions into the output image
       sobel = sobelx + sobely;
