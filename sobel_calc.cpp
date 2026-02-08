@@ -15,7 +15,7 @@ using namespace cv;
  ********************************************/
 void sobelCalc(Mat& img, Mat& img_sobel_out)
 {
-  // double color;
+  double color;
   static Mat img_gray;
   
   img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
