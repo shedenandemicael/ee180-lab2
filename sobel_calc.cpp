@@ -25,13 +25,15 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       float32x4_t scalar;
 
       uint32x4x3_t data = vld3q_u32(&img.data[STEP0*i + STEP1*j]);
-      float32x4x3_t datafp = vcvtq_f32_u32(data);
+      float32x4_t data1 = vcvtq_f32_u32(data.val[0]);
+      float32x4_t data2 = vcvtq_f32_u32(data.val[1]);
+      float32x4_t data3 = vcvtq_f32_u32(data.val[2]);
       scalar = vdupq_n_f32(.114f);
-      float32x4_t op1 = vmulq_f32(data.val[0], scalar);
+      float32x4_t op1 = vmulq_f32(data1, scalar);
       scalar = vdupq_n_f32(.587f);
-      float32x4_t op2 = vmulq_f32(data.val[1], scalar);
+      float32x4_t op2 = vmulq_f32(data2, scalar);
       scalar = vdupq_n_f32(.299f);
-      float32x4_t op3 = vmulq_f32(data.val[2], scalar);
+      float32x4_t op3 = vmulq_f32(data3, scalar);
       float32x4_t colorfp = vaddq_f32(vaddq_f32(op1, op2), op3);
       uint32x4_t color = vcvtq_u32_f32(colorfp);
 
