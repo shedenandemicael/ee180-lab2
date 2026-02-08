@@ -35,7 +35,8 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       scalar = vdupq_n_f32(.299f);
       float32x4_t op3 = vmulq_f32(data3, scalar);
       float32x4_t colorfp = vaddq_f32(vaddq_f32(op1, op2), op3);
-      uint8x4_t color = vqmovn_u16(vqmovn_u32(vcvtq_u32_f32(colorfp)));
+      uint16x4_t coloru = vqmovn_u32(vcvtq_u32_f32(colorfp));
+      uint8x8_t color = vqmovn_u16(vcombine_u16(coloru, coloru));
 
       vst1_u8(&img_gray.data[IMG_WIDTH*i + j], color);
 
