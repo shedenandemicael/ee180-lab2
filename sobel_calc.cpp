@@ -21,7 +21,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
   // Convert to grayscale
   for (int i=0; i<img.rows; i++) {
-    for (int j=0; j<img.cols; j+=4) {
+    for (int j=0; j<img.cols; j+=8) {
       // float32x4_t scalar;
 
       // uint8x8x3_t data = vld3_u8(&img.data[STEP0*i + STEP1*j]);
@@ -54,7 +54,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
 
   // Calculate the x and y convolution
   for (int i=1; i<img_gray.rows; i++) {
-    for (int j=1; j<img_gray.cols; j+=4) {
+    for (int j=1; j<img_gray.cols; j+=8) {
       sobelx = abs(img_gray.data[IMG_WIDTH*(i-1) + (j-1)] -
 		  img_gray.data[IMG_WIDTH*(i+1) + (j-1)] +
 		  2*img_gray.data[IMG_WIDTH*(i-1) + (j)] -
