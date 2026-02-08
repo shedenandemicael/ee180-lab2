@@ -15,7 +15,7 @@ using namespace cv;
  ********************************************/
 void sobelCalc(Mat& img, Mat& img_sobel_out)
 {
-  double color;
+  // double color;
   static Mat img_gray;
   
   img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
@@ -25,9 +25,9 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       float32x4_t scalar;
 
       uint16x4x3_t data = vld3_u16((uint16_t *) &img.data[STEP0*i + STEP1*j]);
-      float32x4_t data1 = vcvtq_f32_u32(vmovlq_u16(data.val[0]));
-      float32x4_t data2 = vcvtq_f32_u32(vmovlq_u16(data.val[1]));
-      float32x4_t data3 = vcvtq_f32_u32(vmovlq_u16(data.val[2]));
+      float32x4_t data1 = vcvtq_f32_u32(vmovl_u16(data.val[0]));
+      float32x4_t data2 = vcvtq_f32_u32(vmovl_u16(data.val[1]));
+      float32x4_t data3 = vcvtq_f32_u32(vmovl_u16(data.val[2]));
       scalar = vdupq_n_f32(.114f);
       float32x4_t op1 = vmulq_f32(data1, scalar);
       scalar = vdupq_n_f32(.587f);
@@ -37,7 +37,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       float32x4_t colorfp = vaddq_f32(vaddq_f32(op1, op2), op3);
       uint16x4_t color = vmovn_u32(vcvtq_u32_f32(colorfp));
 
-      vst1q_u16((uint16_t *) &img_gray.data[IMG_WIDTH*i + j], color);
+      vst1_u16((uint16_t *) &img_gray.data[IMG_WIDTH*i + j], color);
 
       // color = .114*img.data[STEP0*i + STEP1*j] +
       //         .587*img.data[STEP0*i + STEP1*j + 1] +
