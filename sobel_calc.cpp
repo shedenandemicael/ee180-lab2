@@ -22,22 +22,22 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   // Convert to grayscale
   for (int j=0; j<img.cols; j++) {
     for (int i=0; i<img.rows; i+=8) {
-      float8x16_t scalar;
+      float16x8_t scalar;
 
-      uint8x16x3_t data = vld3q_u8(&img.data[STEP0*i + STEP1*j]);
-      float8x16_t data1 = vcvtq_f8_u8(data.val[0]);
-      float8x16_t data2 = vcvtq_f8_u8(data.val[1]);
-      float8x16_t data3 = vcvtq_f8_u8(data.val[2]);
-      scalar = vdupq_n_f8(.114f);
-      float8x16_t op1 = vmulq_f8(data1, scalar);
-      scalar = vdupq_n_f8(.587f);
-      float8x16_t op2 = vmulq_f8(data2, scalar);
-      scalar = vdupq_n_f8(.299f);
-      float8x16_t op3 = vmulq_f8(data3, scalar);
-      float8x16_t colorfp = vaddq_f8(vaddq_f8(op1, op2), op3);
-      uint8x16_t color = vcvtq_u8_f8(colorfp);
+      uint16x8x3_t data = vld3q_u16(&(uint16_t *)img.data[STEP0*i + STEP1*j]);
+      float16x8_t data1 = vcvtq_f16_u16(data.val[0]);
+      float16x8_t data2 = vcvtq_f16_u16(data.val[1]);
+      float16x8_t data3 = vcvtq_f16_u16(data.val[2]);
+      scalar = vdupq_n_f16(.114f);
+      float16x8_t op1 = vmulq_f16(data1, scalar);
+      scalar = vdupq_n_f16(.587f);
+      float16x8_t op2 = vmulq_f16(data2, scalar);
+      scalar = vdupq_n_f16(.299f);
+      float16x8_t op3 = vmulq_f16(data3, scalar);
+      float16x8_t colorfp = vaddq_f16(vaddq_f16(op1, op2), op3);
+      uint16x8_t color = vcvtq_u16_f16(colorfp);
 
-      vst1q_f8(&img_gray.data[IMG_WIDTH*i + j], color);
+      vst1q_f16(&img_gray.data[IMG_WIDTH*i + j], color);
 
       // color = .114*img.data[STEP0*i + STEP1*j] +
       //         .587*img.data[STEP0*i + STEP1*j + 1] +
