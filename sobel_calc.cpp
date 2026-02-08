@@ -21,11 +21,24 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
   // Convert to grayscale
   for (int j=0; j<img.cols; j++) {
-    for (int i=0; i<img.rows; i++) {
-      color = .114*img.data[STEP0*i + STEP1*j] +
-              .587*img.data[STEP0*i + STEP1*j + 1] +
-              .299*img.data[STEP0*i + STEP1*j + 2];
-      img_gray.data[IMG_WIDTH*i + j] = color;
+    for (int i=0; i<img.rows; i+=8) {
+      float16x8_t scalar;
+
+      float16x8x3_t data = vld3q_u16(&img.data[STEP0*i + STEP1*j]);
+      scalar = vdupq_n_f16(.114f);
+      float16x8_t op1 = vmulq_f16(data.val[0], scalar);
+      scalar = vdupq_n_f16(.587f);
+      float16x8_t op2 = vmulq_f16(data.val[1], scalar);
+      scalar = vdupq_n_f16(.299f);
+      float16x8_t op3 = vmulq_f16(data.val[2], scalar);
+      float16x8_t color = vaddq_f16(vaddq_f16(op1, op2), op3);
+
+      vst1q_f16(&img_gray.data[IMG_WIDTH*i + j], color);
+
+      // color = .114*img.data[STEP0*i + STEP1*j] +
+      //         .587*img.data[STEP0*i + STEP1*j + 1] +
+      //         .299*img.data[STEP0*i + STEP1*j + 2];
+      // img_gray.data[IMG_WIDTH*i + j] = color;
     }
   }
 
