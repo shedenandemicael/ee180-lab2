@@ -24,20 +24,20 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
     for (int i=0; i<img.rows; i+=8) {
       float32x4_t scalar;
 
-      uint32x4x3_t data = vld3q_u32(&img.data[STEP0*i + STEP1*j]);
-      float32x4_t data1 = vcvtq_f32_u32(data.val[0]);
-      float32x4_t data2 = vcvtq_f32_u32(data.val[1]);
-      float32x4_t data3 = vcvtq_f32_u32(data.val[2]);
-      scalar = vdupq_n_f32(.114f);
-      float32x4_t op1 = vmulq_f32(data1, scalar);
-      scalar = vdupq_n_f32(.587f);
-      float32x4_t op2 = vmulq_f32(data2, scalar);
-      scalar = vdupq_n_f32(.299f);
-      float32x4_t op3 = vmulq_f32(data3, scalar);
-      float32x4_t colorfp = vaddq_f32(vaddq_f32(op1, op2), op3);
-      uint32x4_t color = vcvtq_u32_f32(colorfp);
+      uint8x16x3_t data = vld3q_u8(&img.data[STEP0*i + STEP1*j]);
+      // float32x4_t data1 = vcvtq_f32_u32(data.val[0]);
+      // float32x4_t data2 = vcvtq_f32_u32(data.val[1]);
+      // float32x4_t data3 = vcvtq_f32_u32(data.val[2]);
+      // scalar = vdupq_n_f32(.114f);
+      // float32x4_t op1 = vmulq_f32(data1, scalar);
+      // scalar = vdupq_n_f32(.587f);
+      // float32x4_t op2 = vmulq_f32(data2, scalar);
+      // scalar = vdupq_n_f32(.299f);
+      // float32x4_t op3 = vmulq_f32(data3, scalar);
+      // float32x4_t colorfp = vaddq_f32(vaddq_f32(op1, op2), op3);
+      // uint32x4_t color = vcvtq_u32_f32(colorfp);
 
-      vst1q_f32(&img_gray.data[IMG_WIDTH*i + j], color);
+      // vst1q_f32(&img_gray.data[IMG_WIDTH*i + j], color);
 
       // color = .114*img.data[STEP0*i + STEP1*j] +
       //         .587*img.data[STEP0*i + STEP1*j + 1] +
