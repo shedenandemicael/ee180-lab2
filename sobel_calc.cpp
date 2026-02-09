@@ -95,7 +95,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       int16x8_t sobely = vsubq_s16(vaddq_s16(vsubq_s16(vaddq_s16(vsubq_s16(yop1, yop2), yop3), yop4), yop5), yop6);
       sobely = vabsq_s16(sobely);
 
-      uint8x8_t sobel = vreinterpret_u8_s8(vqmovn_s16(vaddq_s16(sobelx, sobely)));
+      uint8x8_t sobel = vqmovn_s16(vreinterpret_u16_s16(vaddq_s16(sobelx, sobely)));
       vst1_u8(&img_sobel_out.data[IMG_WIDTH*(i) + j], sobel);
       // sobelx = abs(img_gray.data[IMG_WIDTH*(i-1) + (j-1)] -
 		  // img_gray.data[IMG_WIDTH*(i+1) + (j-1)] +
