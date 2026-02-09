@@ -67,14 +67,14 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       sobel = (sobel > 255) ? 255 : sobel;
       img_sobel_out.data[IMG_WIDTH*(i) + j] = sobel;
     }
-    
+
     for (int j=8; j<img_gray.cols-1; j+=8) {
-      int16x8_t xop1 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i-1) + (j-1)));
-      int16x8_t xop2 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i+1) + (j-1)));
-      int16x8_t xop3 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i-1) + (j)));
-      int16x8_t xop4 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i+1) + (j)));
-      int16x8_t xop5 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i-1) + (j+1)));
-      int16x8_t xop6 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i+1) + (j+1)));
+      int16x8_t xop1 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j-1)]));
+      int16x8_t xop2 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j-1)]));
+      int16x8_t xop3 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j)]));
+      int16x8_t xop4 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j)]));
+      int16x8_t xop5 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j+1)]));
+      int16x8_t xop6 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j+1)]));
 
       xop3 = vshlq_n_s16(xop3, 1);  // multiply by 2
       xop4 = vshlq_n_s16(xop4, 1);
@@ -82,12 +82,12 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       int16x8_t sobelx = vsubq_s16(vaddq_s16(vsubq_s16(vaddq_s16(vsubq_s16(xop1, xop2), xop3), xop4), xop5), xop6);
       sobelx = vabsq_s16(sobelx);
 
-      int16x8_t yop1 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i-1) + (j-1)));
-      int16x8_t yop2 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i-1) + (j+1)));
-      int16x8_t yop3 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i) + (j-1)));
-      int16x8_t yop4 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i) + (j+1)));
-      int16x8_t yop5 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i+1) + (j-1)));
-      int16x8_t yop6 = vmovl_s8(vld1_s8(&IMG_WIDTH*(i+1) + (j+1)));
+      int16x8_t yop1 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j-1)]));
+      int16x8_t yop2 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j+1)]));
+      int16x8_t yop3 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i) + (j-1)]));
+      int16x8_t yop4 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i) + (j+1)]));
+      int16x8_t yop5 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j-1)]));
+      int16x8_t yop6 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j+1)]));
 
       yop3 = vshlq_n_s16(yop3, 1);  // multiply by 2
       yop4 = vshlq_n_s16(yop4, 1);
