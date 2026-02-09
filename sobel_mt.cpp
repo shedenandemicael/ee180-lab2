@@ -52,13 +52,6 @@ void *runSobelMT(void *ptr)
   }
   pthread_mutex_unlock(&thread0);
 
-  // For now, we just kill the second thread. It's up to you to get it to compute
-  // the other half of the image.
-  // if (myID != thread0_id) {
-  //   pthread_barrier_wait(&endSobel);
-  //   return NULL;
-  // }
-
   pc_init(&perf_counters, 0);
 
   // Start algorithm
@@ -91,18 +84,15 @@ void *runSobelMT(void *ptr)
     sobel_ic = perf_counters.ic.count;
 
     // LAB 2, PART 2: Start parallel section
-    // if (i > 0 && myID == thread0_id)
-    //   pthread_barrier_wait(&endSobel);
-
     pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
     if (myID == thread0_id) {
-      Mat src_top = src.rowRange(0, src.rows / 2);
+      Mat src_top = src.rowRange(0, src.rows / 2 + 1);
       Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
       grayScale(src_top, img_gray_top);
     } else {
-      Mat src_bot = src.rowRange(src.rows / 2, src.rows);
+      Mat src_bot = src.rowRange(src.rows / 2 - 1, src.rows);
       Mat img_gray_bot = img_gray.rowRange(img_gray.rows / 2, img_gray.rows);
       grayScale(src_bot, img_gray_bot);
     }
@@ -115,7 +105,6 @@ void *runSobelMT(void *ptr)
     pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
-    // sobelCalc(img_gray, img_sobel);
     if (myID == thread0_id) {
       Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2 + 1);
       Mat img_sobel_top = img_sobel.rowRange(0, img_sobel.rows / 2);
@@ -185,6 +174,5 @@ void *runSobelMT(void *ptr)
 
   cvReleaseCapture(&video_cap);
   results_file.close();
-  // pthread_barrier_wait(&endSobel);
   return NULL;
 }
