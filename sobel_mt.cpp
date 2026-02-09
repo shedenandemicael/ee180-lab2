@@ -91,8 +91,9 @@ void *runSobelMT(void *ptr)
     sobel_ic = perf_counters.ic.count;
 
     // LAB 2, PART 2: Start parallel section
-    pthread_barrier_wait(&endSobel);
-    
+    if (i > 0 && myID == thread0_id)
+      pthread_barrier_wait(&endSobel);
+
     pc_start(&perf_counters);
     if (myID == thread0_id) {
       Mat src_top = src.rowRange(0, src.rows / 2);
