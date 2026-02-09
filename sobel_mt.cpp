@@ -92,10 +92,15 @@ void *runSobelMT(void *ptr)
 
     // LAB 2, PART 2: Start parallel section
     pc_start(&perf_counters);
-    if (myID == thread0_id) 
-      grayScale(src.rowRange(0, src.rows / 2), img_gray.rowRange(0, img_gray.rows / 2));
-    else
-      grayScale(src.rowRange(src.rows / 2, src.rows), img_gray.rowRange(img_gray.rows / 2, img_gray.rows));
+    if (myID == thread0_id) {
+      Mat src_top = src.rowRange(0, src.rows / 2);
+      Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
+      grayScale(src_top, img_gray_top);
+    } else {
+      Mat src_bot = src.rowRange(src.rows / 2, src.rows);
+      Mat img_gray_bot = img_gray.rowRange(img_gray.rows / 2, img_gray.rows);
+      grayScale(src_bot, img_gray_bot);
+    }
     pc_stop(&perf_counters);
 
     gray_time = perf_counters.cycles.count;
@@ -105,10 +110,15 @@ void *runSobelMT(void *ptr)
     pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
-    if (myID == thread0_id) 
-      sobelCalc(img_gray.rowRange(0, img_gray.rows / 2), img_sobel.rowRange(0, img_sobel.rows / 2));
-    else
-      sobelCalc(img_gray.rowRange(img_gray.rows / 2, img_gray.rows), img_sobel.rowRange(img_sobel.rows / 2, img_sobel.rows));
+    if (myID == thread0_id) {
+      Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
+      Mat img_sobel_top = img_sobel.rowRange(0, img_sobel.rows / 2);
+      sobelCalc(img_gray_top, img_sobel_top);
+    } else {
+      Mat img_gray_bot = img_gray.rowRange(img_gray.rows / 2, img_gray.rows);
+      Mat img_sobel_bot = img_sobel.rowRange(img_sobel.rows / 2, img_sobel.rows);
+      sobelCalc(img_gray_bot, img_sobel_bot);
+    }
     pc_stop(&perf_counters);
 
     sobel_time = perf_counters.cycles.count;
