@@ -15,50 +15,22 @@ using namespace cv;
  ********************************************/
 void sobelCalc(Mat& img, Mat& img_sobel_out)
 {
-  // double color;
   static Mat img_gray;
   
   img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
   // Convert to grayscale
   for (int i=0; i<img.rows; i++) {
     for (int j=0; j<img.cols; j+=8) {
-      // uint16x8_t scalar;
-
       uint8x8x3_t data = vld3_u8(&img.data[STEP0*i + STEP1*j]);
       uint16x8_t data1 = vmovl_u8(data.val[0]);
       uint16x8_t data2 = vmovl_u8(data.val[1]);
       uint16x8_t data3 = vmovl_u8(data.val[2]);
-      // scalar = vdupq_n_u16(114);
       uint8x8_t op1 = vshrn_n_u16(vmulq_n_u16(data1, 29), 8);  // multiply by 29/256 ~ .114
-      // scalar = vdupq_n_u16(587);
       uint8x8_t op2 = vshrn_n_u16(vmulq_n_u16(data2, 150), 8);  // multiply by 150/256 ~ .587
-      // scalar = vdupq_n_u16(299);
       uint8x8_t op3 = vshrn_n_u16(vmulq_n_u16(data3, 77), 8);  // multiply by 77/256 ~ .299
-      // scalar = vdupq_n_u16(1000);
-
       uint8x8_t color = vadd_u8(vadd_u8(op1, op2), op3);
-      // uint16x4_t coloru = vqmovn_u32(vcvtq_u32_f32(colorfp));
-      // uint8x8_t color = vqmovn_u16(vcombine_u16(coloru, coloru));
 
       vst1_u8(&img_gray.data[IMG_WIDTH*i + j], color);
-
-      // float32x4_t scalar;
-
-      // uint8x8x3_t data = vld3_u8(&img.data[STEP0*i + STEP1*j]);
-      // float32x4_t data1 = vcvtq_f32_u32(vmovl_u16(vget_low_u16(vmovl_u8(data.val[0]))));
-      // float32x4_t data2 = vcvtq_f32_u32(vmovl_u16(vget_low_u16(vmovl_u8(data.val[1]))));
-      // float32x4_t data3 = vcvtq_f32_u32(vmovl_u16(vget_low_u16(vmovl_u8(data.val[2]))));
-      // scalar = vdupq_n_f32(.114f);
-      // float32x4_t op1 = vmulq_f32(data1, scalar);
-      // scalar = vdupq_n_f32(.587f);
-      // float32x4_t op2 = vmulq_f32(data2, scalar);
-      // scalar = vdupq_n_f32(.299f);
-      // float32x4_t op3 = vmulq_f32(data3, scalar);
-      // float32x4_t colorfp = vaddq_f32(vaddq_f32(op1, op2), op3);
-      // uint16x4_t coloru = vqmovn_u32(vcvtq_u32_f32(colorfp));
-      // uint8x8_t color = vqmovn_u16(vcombine_u16(coloru, coloru));
-
-      // vst1_u8(&img_gray.data[IMG_WIDTH*i + j], color);
 
       // color = .114*img.data[STEP0*i + STEP1*j] +
       //         .587*img.data[STEP0*i + STEP1*j + 1] +
