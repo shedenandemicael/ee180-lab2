@@ -82,6 +82,8 @@ void *runSobelMT(void *ptr)
     img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
     img_sobel = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
 
+    pthread_barrier_wait(&endSobel);
+
     pc_start(&perf_counters);
     src = cvQueryFrame(video_cap);
     pc_stop(&perf_counters);
@@ -93,6 +95,8 @@ void *runSobelMT(void *ptr)
     // LAB 2, PART 2: Start parallel section
     // if (i > 0 && myID == thread0_id)
     //   pthread_barrier_wait(&endSobel);
+
+    pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
     if (myID == thread0_id) {
