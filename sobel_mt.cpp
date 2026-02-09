@@ -88,11 +88,11 @@ void *runSobelMT(void *ptr)
 
     pc_start(&perf_counters);
     if (myID == thread0_id) {
-      Mat src_top = src.rowRange(0, src.rows / 2 + 1);
+      Mat src_top = src.rowRange(0, src.rows / 2);
       Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
       grayScale(src_top, img_gray_top);
     } else {
-      Mat src_bot = src.rowRange(src.rows / 2 - 1, src.rows);
+      Mat src_bot = src.rowRange(src.rows / 2, src.rows);
       Mat img_gray_bot = img_gray.rowRange(img_gray.rows / 2, img_gray.rows);
       grayScale(src_bot, img_gray_bot);
     }
