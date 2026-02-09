@@ -15,7 +15,7 @@ using namespace cv;
  ********************************************/
 void sobelCalc(Mat& img, Mat& img_sobel_out)
 {
-  double color;
+  // double color;
   static Mat img_gray;
   
   img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
@@ -24,7 +24,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
     for (int j=0; j<img.cols; j+=8) {
       // uint16x8_t scalar;
 
-      uint8x8x3_t data = vld3q_u8(&img.data[STEP0*i + STEP1*j]);
+      uint8x8x3_t data = vld3_u8(&img.data[STEP0*i + STEP1*j]);
       uint16x8_t data1 = vmovl_u8(data.val[0]);
       uint16x8_t data2 = vmovl_u8(data.val[1]);
       uint16x8_t data3 = vmovl_u8(data.val[2]);
