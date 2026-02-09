@@ -154,14 +154,13 @@ void *runSobelMT(void *ptr)
       disp_total += disp_time;
       total_fps += PROC_FREQ/float(cap_time + disp_time + gray_time + sobel_time);
       total_ipc += float(sobel_ic/float(cap_time + disp_time + gray_time + sobel_time));
-      i++;
     }
+    i++;
     pthread_barrier_wait(&endSobel);
 
     // Press q to exit
     char c = cvWaitKey(10);
     if (c == 'q' || i >= opts.numFrames) {
-      pthread_barrier_wait(&endSobel);
       break;
     }
   }
