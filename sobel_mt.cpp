@@ -112,11 +112,9 @@ void *runSobelMT(void *ptr)
 
     pthread_barrier_wait(&endSobel);
 
-    if (myID == thread0_id)
-      pthread_barrier_wait(&endSobel);
-
     pc_start(&perf_counters);
-    sobelCalc(img_gray, img_sobel);
+    if (myID == thread0_id)
+      sobelCalc(img_gray, img_sobel);
     // if (myID == thread0_id) {
     //   Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
     //   Mat img_sobel_top = img_sobel.rowRange(0, img_sobel.rows / 2);
@@ -131,43 +129,39 @@ void *runSobelMT(void *ptr)
     sobel_time = perf_counters.cycles.count;
     sobel_l1cm += perf_counters.l1_misses.count;
     sobel_ic += perf_counters.ic.count;
-    // pthread_barrier_wait(&endSobel);
+    pthread_barrier_wait(&endSobel);
 
     // if (myID != thread0_id) {
     //   pthread_barrier_wait(&endSobel);
     // }
 
     // LAB 2, PART 2: End parallel section
+    if (myID == thread0_id) {
+      pc_start(&perf_counters);
+      namedWindow(top, CV_WINDOW_AUTOSIZE);
+      imshow(top, img_sobel);
+      pc_stop(&perf_counters);
 
-    pc_start(&perf_counters);
-    namedWindow(top, CV_WINDOW_AUTOSIZE);
-    imshow(top, img_sobel);
-    pc_stop(&perf_counters);
+      disp_time = perf_counters.cycles.count;
+      sobel_l1cm += perf_counters.l1_misses.count;
+      sobel_ic += perf_counters.ic.count;
 
-    disp_time = perf_counters.cycles.count;
-    sobel_l1cm += perf_counters.l1_misses.count;
-    sobel_ic += perf_counters.ic.count;
-
-    cap_total += cap_time;
-    gray_total += gray_time;
-    sobel_total += sobel_time;
-    sobel_l1cm_total += sobel_l1cm;
-    sobel_ic_total += sobel_ic;
-    disp_total += disp_time;
-    total_fps += PROC_FREQ/float(cap_time + disp_time + gray_time + sobel_time);
-    total_ipc += float(sobel_ic/float(cap_time + disp_time + gray_time + sobel_time));
-    i++;
+      cap_total += cap_time;
+      gray_total += gray_time;
+      sobel_total += sobel_time;
+      sobel_l1cm_total += sobel_l1cm;
+      sobel_ic_total += sobel_ic;
+      disp_total += disp_time;
+      total_fps += PROC_FREQ/float(cap_time + disp_time + gray_time + sobel_time);
+      total_ipc += float(sobel_ic/float(cap_time + disp_time + gray_time + sobel_time));
+      i++;
+    }
 
     // Press q to exit
     char c = cvWaitKey(10);
     if (c == 'q' || i >= opts.numFrames) {
-      if (myID != thread0_id)
-        pthread_barrier_wait(&endSobel);
       break;
     }
-
-    if (myID != thread0_id)
-      pthread_barrier_wait(&endSobel);
   }
 
   total_epf = PROC_EPC*NCORES/(total_fps/i);
