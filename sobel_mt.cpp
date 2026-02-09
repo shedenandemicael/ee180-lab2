@@ -161,6 +161,7 @@ void *runSobelMT(void *ptr)
     // Press q to exit
     char c = cvWaitKey(10);
     if (c == 'q' || i >= opts.numFrames) {
+      pthread_barrier_wait(&endSobel);
       break;
     }
   }
