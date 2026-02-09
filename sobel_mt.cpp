@@ -112,7 +112,7 @@ void *runSobelMT(void *ptr)
 
     pthread_barrier_wait(&endSobel);
 
-    if (myID != thread0_id)
+    if (myID == thread0_id)
       pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
