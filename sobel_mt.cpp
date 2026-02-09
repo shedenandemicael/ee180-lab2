@@ -114,29 +114,27 @@ void *runSobelMT(void *ptr)
 
     pthread_barrier_wait(&endSobel);
 
+    pc_start(&perf_counters);
+    // sobelCalc(img_gray, img_sobel);
     if (myID == thread0_id) {
-      pc_start(&perf_counters);
-      sobelCalc(img_gray, img_sobel);
-    // if (myID == thread0_id) {
-    //   Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
-    //   Mat img_sobel_top = img_sobel.rowRange(0, img_sobel.rows / 2);
-    //   sobelCalc(img_gray_top, img_sobel_top);
-    // } else {
-    //   Mat img_gray_bot = img_gray.rowRange(img_gray.rows / 2, img_gray.rows);
-    //   Mat img_sobel_bot = img_sobel.rowRange(img_sobel.rows / 2, img_sobel.rows);
-    //   sobelCalc(img_gray_bot, img_sobel_bot);
-    // }
-      pc_stop(&perf_counters);
+      Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
+      Mat img_sobel_top = img_sobel.rowRange(0, img_sobel.rows / 2);
+      sobelCalc(img_gray_top, img_sobel_top);
+    } else {
+      Mat img_gray_bot = img_gray.rowRange(img_gray.rows / 2, img_gray.rows);
+      Mat img_sobel_bot = img_sobel.rowRange(img_sobel.rows / 2, img_sobel.rows);
+      sobelCalc(img_gray_bot, img_sobel_bot);
+    }
+    pc_stop(&perf_counters);
 
-      sobel_time = perf_counters.cycles.count;
-      sobel_l1cm += perf_counters.l1_misses.count;
-      sobel_ic += perf_counters.ic.count;
+    sobel_time = perf_counters.cycles.count;
+    sobel_l1cm += perf_counters.l1_misses.count;
+    sobel_ic += perf_counters.ic.count;
 
-    // if (myID != thread0_id) {
-    //   pthread_barrier_wait(&endSobel);
-    // }
+    pthread_barrier_wait(&endSobel);
 
     // LAB 2, PART 2: End parallel section
+    if (myID == thread0_id) {
       pc_start(&perf_counters);
       namedWindow(top, CV_WINDOW_AUTOSIZE);
       imshow(top, img_sobel);
