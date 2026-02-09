@@ -40,9 +40,9 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
   }
 
   // Apply Sobel filter to black & white image
-  // unsigned short sobel;
-  // unsigned short sobelx;
-  // unsigned short sobely;
+  unsigned short sobel;
+  unsigned short sobelx;
+  unsigned short sobely;
 
   // Calculate the x and y convolution
   for (int i=1; i<img_gray.rows-1; i++) {
@@ -82,12 +82,12 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       int16x8_t sobelx = vsubq_s16(vaddq_s16(vsubq_s16(vaddq_s16(vsubq_s16(xop1, xop2), xop3), xop4), xop5), xop6);
       sobelx = vabsq_s16(sobelx);
 
-      int16x8_t yop1 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j-1)]));
-      int16x8_t yop2 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j+1)]));
-      int16x8_t yop3 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i) + (j-1)]));
-      int16x8_t yop4 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i) + (j+1)]));
-      int16x8_t yop5 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j-1)]));
-      int16x8_t yop6 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j+1)]));
+      int16x8_t yop1 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i-1) + (j-1)])));
+      int16x8_t yop2 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i-1) + (j+1)])));
+      int16x8_t yop3 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i) + (j-1)])));
+      int16x8_t yop4 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i) + (j+1)])));
+      int16x8_t yop5 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i+1) + (j-1)])));
+      int16x8_t yop6 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i+1) + (j+1)])));
 
       yop3 = vshlq_n_s16(yop3, 1);  // multiply by 2
       yop4 = vshlq_n_s16(yop4, 1);
