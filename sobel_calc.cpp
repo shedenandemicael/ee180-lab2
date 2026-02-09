@@ -69,12 +69,12 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
     }
 
     for (int j=8; j<img_gray.cols-1; j+=8) {
-      int16x8_t xop1 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j-1)]));
-      int16x8_t xop2 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j-1)]));
-      int16x8_t xop3 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j)]));
-      int16x8_t xop4 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j)]));
-      int16x8_t xop5 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i-1) + (j+1)]));
-      int16x8_t xop6 = vmovl_s8(vld1_s8(&img_gray.data[IMG_WIDTH*(i+1) + (j+1)]));
+      int16x8_t xop1 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i-1) + (j-1)])));
+      int16x8_t xop2 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i+1) + (j-1)])));
+      int16x8_t xop3 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i-1) + (j)])));
+      int16x8_t xop4 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i+1) + (j)])));
+      int16x8_t xop5 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i-1) + (j+1)])));
+      int16x8_t xop6 = vreinterpretq_s16_u16(vmovl_u8(vld1_u8(&img_gray.data[IMG_WIDTH*(i+1) + (j+1)])));
 
       xop3 = vshlq_n_s16(xop3, 1);  // multiply by 2
       xop4 = vshlq_n_s16(xop4, 1);
