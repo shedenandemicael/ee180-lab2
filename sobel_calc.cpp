@@ -29,14 +29,14 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       uint16x8_t data2 = vmovl_u8(data.val[1]);
       uint16x8_t data3 = vmovl_u8(data.val[2]);
       // scalar = vdupq_n_u16(114);
-      uint16x8_t op1 = vshrn_n_u16(vmulq_n_u16(data1, 29), 8);  // multiply by 29/256 ~ .114
+      uint8x8_t op1 = vshrn_n_u16(vmulq_n_u16(data1, 29), 8);  // multiply by 29/256 ~ .114
       // scalar = vdupq_n_u16(587);
-      uint16x8_t op2 = vshrn_n_u16(vmulq_n_u16(data2, 150), 8);  // multiply by 150/256 ~ .587
+      uint8x8_t op2 = vshrn_n_u16(vmulq_n_u16(data2, 150), 8);  // multiply by 150/256 ~ .587
       // scalar = vdupq_n_u16(299);
-      uint16x8_t op3 = vshrn_n_u16(vmulq_n_u16(data3, 77), 8);  // multiply by 77/256 ~ .299
+      uint8x8_t op3 = vshrn_n_u16(vmulq_n_u16(data3, 77), 8);  // multiply by 77/256 ~ .299
       // scalar = vdupq_n_u16(1000);
 
-      uint8x8_t color = vqmovn_u16(vaddq_u16(vaddq_u16(op1, op2), op3));
+      uint8x8_t color = vaddq_u8(vaddq_u8(op1, op2), op3);
       // uint16x4_t coloru = vqmovn_u32(vcvtq_u32_f32(colorfp));
       // uint8x8_t color = vqmovn_u16(vcombine_u16(coloru, coloru));
 
