@@ -36,7 +36,7 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       uint8x8_t op3 = vshrn_n_u16(vmulq_n_u16(data3, 77), 8);  // multiply by 77/256 ~ .299
       // scalar = vdupq_n_u16(1000);
 
-      uint8x8_t color = vaddq_u8(vaddq_u8(op1, op2), op3);
+      uint8x8_t color = vadd_u8(vadd_u8(op1, op2), op3);
       // uint16x4_t coloru = vqmovn_u32(vcvtq_u32_f32(colorfp));
       // uint8x8_t color = vqmovn_u16(vcombine_u16(coloru, coloru));
 
