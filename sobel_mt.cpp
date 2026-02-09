@@ -112,7 +112,7 @@ void *runSobelMT(void *ptr)
     } else {
       Mat img_gray_bot = img_gray.rowRange(img_gray.rows / 2, img_gray.rows);
       Mat img_sobel_bot = img_sobel.rowRange(img_sobel.rows / 2, img_sobel.rows);
-      sobelCalc(img_gray_top, img_sobel_bot);
+      sobelCalc(img_gray_bot, img_sobel_bot);
     }
     pc_stop(&perf_counters);
 
