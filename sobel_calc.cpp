@@ -5,19 +5,13 @@ using namespace cv;
 
 
 /*******************************************
- * Model: sobelCalc
- * Input: Mat img_in
- * Output: None directly. Modifies a ref parameter img_sobel_out
- * Desc: This module performs a sobel calculation on an image. It first
- *  converts the image to grayscale, calculates the gradient in the x
- *  direction, calculates the gradient in the y direction and sum it with Gx
- *  to finish the Sobel calculation
- ********************************************/
-void sobelCalc(Mat& img, Mat& img_sobel_out)
+* Model: grayScale
+* Input: Mat img
+* Output: None directly. Modifies a ref parameter img_gray_out
+* Desc: This module converts the image to grayscale
+********************************************/
+void grayScale(Mat& img, Mat& img_gray_out)
 {
-  static Mat img_gray;
-  
-  img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
   // Convert to grayscale
   for (int i=0; i<img.rows; i++) {
     for (int j=0; j<img.cols; j+=8) {
@@ -30,10 +24,22 @@ void sobelCalc(Mat& img, Mat& img_sobel_out)
       uint8x8_t op3 = vshrn_n_u16(vmulq_n_u16(data3, 77), 8);  // multiply by 77/256 ~ .299
       uint8x8_t color = vadd_u8(vadd_u8(op1, op2), op3);
 
-      vst1_u8(&img_gray.data[IMG_WIDTH*i + j], color);
+      vst1_u8(&img_gray_out.data[IMG_WIDTH*i + j], color);
     }
   }
+}
 
+/*******************************************
+ * Model: sobelCalc
+ * Input: Mat img_in
+ * Output: None directly. Modifies a ref parameter img_sobel_out
+ * Desc: This module performs a sobel calculation on an image. It first
+ *  converts the image to grayscale, calculates the gradient in the x
+ *  direction, calculates the gradient in the y direction and sum it with Gx
+ *  to finish the Sobel calculation
+ ********************************************/
+void sobelCalc(Mat& img_gray, Mat& img_sobel_out)
+{
   // Apply Sobel filter to black & white image
   unsigned short sobel;
   unsigned short sobelx;

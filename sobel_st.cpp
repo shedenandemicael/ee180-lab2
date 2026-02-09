@@ -22,9 +22,9 @@ using namespace cv;
 static ofstream results_file;
 
 // Define image mats to pass between function calls
-static Mat img_sobel;
+static Mat img_gray, img_sobel;
 static float total_fps, total_ipc, total_epf;
-static float sobel_total, cap_total, disp_total;
+static float gray_total, sobel_total, cap_total, disp_total;
 static float sobel_ic_total, sobel_l1cm_total;
 
 /*******************************************
@@ -40,7 +40,7 @@ void runSobelST()
   // Set up variables for computing Sobel
   string top = "Sobel Top";
   Mat src;
-  uint64_t cap_time, sobel_time, disp_time, sobel_l1cm, sobel_ic;
+  uint64_t cap_time, gray_time, sobel_time, disp_time, sobel_l1cm, sobel_ic;
 
   counters_t perf_counters;
 
@@ -62,7 +62,7 @@ void runSobelST()
 
   while (1) {
     // Allocate memory to hold grayscale and sobel images
-    // img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
+    img_gray = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
     img_sobel = Mat(IMG_HEIGHT, IMG_WIDTH, CV_8UC1);
 
     pc_start(&perf_counters);
@@ -73,16 +73,16 @@ void runSobelST()
     sobel_l1cm = perf_counters.l1_misses.count;
     sobel_ic = perf_counters.ic.count;
 
-    // pc_start(&perf_counters);
-    // grayScale(src, img_gray);
-    // pc_stop(&perf_counters);
+    pc_start(&perf_counters);
+    grayScale(src, img_gray);
+    pc_stop(&perf_counters);
 
-    // gray_time = perf_counters.cycles.count;
-    // sobel_l1cm += perf_counters.l1_misses.count;
-    // sobel_ic += perf_counters.ic.count;
+    gray_time = perf_counters.cycles.count;
+    sobel_l1cm += perf_counters.l1_misses.count;
+    sobel_ic += perf_counters.ic.count;
 
     pc_start(&perf_counters);
-    sobelCalc(src, img_sobel);
+    sobelCalc(img_gray, img_sobel);
     pc_stop(&perf_counters);
 
     sobel_time = perf_counters.cycles.count;
@@ -99,13 +99,13 @@ void runSobelST()
     sobel_ic += perf_counters.ic.count;
 
     cap_total += cap_time;
-    // gray_total += gray_time;
+    gray_total += gray_time;
     sobel_total += sobel_time;
     sobel_l1cm_total += sobel_l1cm;
     sobel_ic_total += sobel_ic;
     disp_total += disp_time;
-    total_fps += PROC_FREQ/float(cap_time + disp_time + sobel_time);
-    total_ipc += float(sobel_ic/float(cap_time + disp_time + sobel_time));
+    total_fps += PROC_FREQ/float(cap_time + disp_time + gray_time + sobel_time);
+    total_ipc += float(sobel_ic/float(cap_time + disp_time + gray_time + sobel_time));
     i++;
 
     // Press q to exit
@@ -116,11 +116,12 @@ void runSobelST()
   }
 
   total_epf = PROC_EPC*NCORES/(total_fps/i);
-  float total_time = float(sobel_total + cap_total + disp_total);
+  float total_time = float(gray_total + sobel_total + cap_total + disp_total);
 
   results_file.open("st_perf.csv", ios::out);
   results_file << "Percent of time per function" << endl;
   results_file << "Capture, " << (cap_total/total_time)*100 << "%" << endl;
+  results_file << "Grayscale, " << (gray_total/total_time)*100 << "%" << endl;
   results_file << "Sobel, " << (sobel_total/total_time)*100 << "%" << endl;
   results_file << "Display, " << (disp_total/total_time)*100 << "%" << endl;
   results_file << "\nSummary" << endl;
