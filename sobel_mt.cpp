@@ -54,10 +54,10 @@ void *runSobelMT(void *ptr)
 
   // For now, we just kill the second thread. It's up to you to get it to compute
   // the other half of the image.
-  // if (myID != thread0_id) {
-  //   pthread_barrier_wait(&endSobel);
-  //   return NULL;
-  // }
+  if (myID != thread0_id) {
+    pthread_barrier_wait(&endSobel);
+    return NULL;
+  }
 
   pc_init(&perf_counters, 0);
 
@@ -91,8 +91,8 @@ void *runSobelMT(void *ptr)
     sobel_ic = perf_counters.ic.count;
 
     // LAB 2, PART 2: Start parallel section
-    if (i > 0 && myID == thread0_id)
-      pthread_barrier_wait(&endSobel);
+    // if (i > 0 && myID == thread0_id)
+    //   pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
     if (myID == thread0_id) {
@@ -110,7 +110,7 @@ void *runSobelMT(void *ptr)
     sobel_l1cm += perf_counters.l1_misses.count;
     sobel_ic += perf_counters.ic.count;
 
-    pthread_barrier_wait(&endSobel);
+    // pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
     if (myID == thread0_id) {
@@ -127,11 +127,11 @@ void *runSobelMT(void *ptr)
     sobel_time = perf_counters.cycles.count;
     sobel_l1cm += perf_counters.l1_misses.count;
     sobel_ic += perf_counters.ic.count;
-    pthread_barrier_wait(&endSobel);
+    // pthread_barrier_wait(&endSobel);
 
-    if (myID != thread0_id) {
-      pthread_barrier_wait(&endSobel);
-    }
+    // if (myID != thread0_id) {
+    //   pthread_barrier_wait(&endSobel);
+    // }
 
     // LAB 2, PART 2: End parallel section
 
