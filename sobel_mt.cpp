@@ -126,9 +126,9 @@ void *runSobelMT(void *ptr)
     sobel_ic += perf_counters.ic.count;
     pthread_barrier_wait(&endSobel);
 
-    if (myID != thread0_id) {
-      pthread_barrier_wait(&endSobel);
-    }
+    // if (myID != thread0_id) {
+    //   pthread_barrier_wait(&endSobel);
+    // }
 
     // LAB 2, PART 2: End parallel section
 
