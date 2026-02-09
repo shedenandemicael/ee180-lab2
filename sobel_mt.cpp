@@ -54,10 +54,10 @@ void *runSobelMT(void *ptr)
 
   // For now, we just kill the second thread. It's up to you to get it to compute
   // the other half of the image.
-  if (myID != thread0_id) {
-    pthread_barrier_wait(&endSobel);
-    return NULL;
-  }
+  // if (myID != thread0_id) {
+  //   pthread_barrier_wait(&endSobel);
+  //   return NULL;
+  // }
 
   pc_init(&perf_counters, 0);
 
@@ -95,7 +95,7 @@ void *runSobelMT(void *ptr)
     //   pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
-    if (myID != thread0_id) {
+    if (myID == thread0_id) {
       Mat src_top = src.rowRange(0, src.rows / 2);
       Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
       grayScale(src_top, img_gray_top);
@@ -110,7 +110,10 @@ void *runSobelMT(void *ptr)
     sobel_l1cm += perf_counters.l1_misses.count;
     sobel_ic += perf_counters.ic.count;
 
-    // pthread_barrier_wait(&endSobel);
+    pthread_barrier_wait(&endSobel);
+
+    if (myID != thread0_id)
+      pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
     sobelCalc(img_gray, img_sobel);
@@ -158,8 +161,13 @@ void *runSobelMT(void *ptr)
     // Press q to exit
     char c = cvWaitKey(10);
     if (c == 'q' || i >= opts.numFrames) {
+      if (myID != thread0_id)
+        pthread_barrier_wait(&endSobel);
       break;
     }
+
+    if (myID != thread0_id)
+      pthread_barrier_wait(&endSobel);
   }
 
   total_epf = PROC_EPC*NCORES/(total_fps/i);
@@ -184,6 +192,6 @@ void *runSobelMT(void *ptr)
 
   cvReleaseCapture(&video_cap);
   results_file.close();
-  pthread_barrier_wait(&endSobel);
+  // pthread_barrier_wait(&endSobel);
   return NULL;
 }
