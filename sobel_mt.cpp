@@ -95,7 +95,7 @@ void *runSobelMT(void *ptr)
     //   pthread_barrier_wait(&endSobel);
 
     pc_start(&perf_counters);
-    if (myID == thread0_id) {
+    if (myID != thread0_id) {
       Mat src_top = src.rowRange(0, src.rows / 2);
       Mat img_gray_top = img_gray.rowRange(0, img_gray.rows / 2);
       grayScale(src_top, img_gray_top);
