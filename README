@@ -1,13 +1,20 @@
-Write a README file that contains the following:
-
-- Your name, your partner’s name, your board’s host name (e.g. ee180-10z.stanford.edu)
-- Each partner’s contribution to the assignment
-- A brief description of optimizations you tried, the outcome, and some explanation (why it worked / why it did not)
-- Report the final performance for both single thread and multithread (we will verify this with your code submission)
-- If you used AI tools, explain how you use it to help with the assignment
-
 Names: Sheden Andemicael, Thomas Kebede
+
 Board Host Name: ee180-28z.stanford.edu
 
+Contributions: We worked on the lab together. Both of us came up with optimization ideas and implemented them. The implementation work was split evenly.
+
 Description: 
-- began by optimizing the sobelCalc function since a majority of work was being done there
+When starting the lab, we saw that the sobelCalc function was taking about most of the computation time, so we began our focus there. The first thing we noticed is that the code was doing many unnecessary memory reads/writes from having multiple loops. We fused these loops into one such that we localized the reads and writes. This gave us our first performance boost. 
+
+The next thing we tried was playing with the compiler flags. We removed the -fno-tree-vectorize flag and changed the level to O3. At this point, this change barely impacted performance. We believe it was not clear to the compiler that our code was parallelizeable/could be implemented with vector instructions. 
+
+Another change we tried was combining the grayScale and sobelCalc functions to further improve data locality, amortize overhead costs of function calling, and minimize the number of reads/writes we were doing. We were able to write a combined function that reduced the number of cache misses and slightly improved performance. In the end, we reverted this version since it was complicated, difficult to combine with multi-threading, and hard to turn into vector instructions. 
+
+The biggest change we made was rewriting the grayScale and sobelCalc functions with NEON vector intrinsics. We knew that we needed to vectorize the code to achieve our performance goals and found it difficult to get the compiler to do it for us. We implemented both functions using 8-wide vectors to achieve a significant speedup. One specific optimizations we did in the gray scale function was approximating float multiplication using unsigned multiplication and bit shifting (i.e., x * 0.114 became x * 29/256 = (x * 29) >> 8). This allowed us to fit more values in our vectors. With the vector instrinsics, we essentially reached our peak performance for the single-threaded program. 
+
+For the multi-threaded program, we split the work in half, giving the top half of the image to thread 0 and the bottom have to thread 1. We used barriers between the grayScale and sobelCalc functions and at other major points to synchronize each thread. For the non-parallel parts of the program, we either had both threads doing it, or just thread 0. The implementation was fairly straight forward, however, we needed to account for overlapping data when calling the sobelCalc function.
+
+Final Performance: We ran the ./sobel program for 100 frames.
+- For the single-threaded program, we achieved 77.3106 FPS.
+- For the multi-threaded program, we achieved 96.3691 FPS.
