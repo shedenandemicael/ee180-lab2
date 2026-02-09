@@ -54,10 +54,10 @@ void *runSobelMT(void *ptr)
 
   // For now, we just kill the second thread. It's up to you to get it to compute
   // the other half of the image.
-  if (myID != thread0_id) {
-    pthread_barrier_wait(&endSobel);
-    return NULL;
-  }
+  // if (myID != thread0_id) {
+  //   pthread_barrier_wait(&endSobel);
+  //   return NULL;
+  // }
 
   pc_init(&perf_counters, 0);
 
@@ -92,15 +92,23 @@ void *runSobelMT(void *ptr)
 
     // LAB 2, PART 2: Start parallel section
     pc_start(&perf_counters);
-    grayScale(src, img_gray);
+    if (myID == thread0_id) 
+      grayScale(src.rowRange(0, src.rows / 2), img_gray.rowRange(0, img_gray.rows / 2));
+    else
+      grayScale(src.rowRange(src.rows / 2, src.rows), img_gray.rowRange(img_gray.rows / 2, img_gray.rows));
     pc_stop(&perf_counters);
 
     gray_time = perf_counters.cycles.count;
     sobel_l1cm += perf_counters.l1_misses.count;
     sobel_ic += perf_counters.ic.count;
 
+    pthread_barrier_wait(&endSobel);
+
     pc_start(&perf_counters);
-    sobelCalc(img_gray, img_sobel);
+    if (myID == thread0_id) 
+      sobelCalc(img_gray.rowRange(0, img_gray.rows / 2), img_sobel.rowRange(0, img_sobel.rows / 2));
+    else
+      sobelCalc(img_gray.rowRange(img_gray.rows / 2, img_gray.rows), img_sobel.rowRange(img_sobel.rows / 2, img_sobel.rows));
     pc_stop(&perf_counters);
 
     sobel_time = perf_counters.cycles.count;
